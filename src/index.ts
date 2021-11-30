@@ -1,12 +1,20 @@
-import express, { NextFunction, Response, Request } from 'express'
+import { MongoConnection } from './database/MongoConnection';
+import { URLController } from './controller/URLController'
+import express from 'express'
 
 const api = express()
+api.use(express.json())
 
-api.get('/test', (req: Request, res:Response, next:NextFunction) =>{
-    res.json({sucess: true})
-})
+const database = new MongoConnection()
+database.connect()
+
+const urlController = new URLController()
+api.post('/shorten', urlController.shorten)
+
+api.get("/:hash", urlController.redirect)
 
 
-api.listen(3000, () =>{
+
+api.listen(5000, () =>{
     console.log('servidor rodando')
 })
